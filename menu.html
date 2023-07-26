@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="birra.png">
+    <title>Rock n'Birra</title>
+</head>
+<header class="menu-header">
+    <a href="index.html" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="back-arrow" style="padding: 1vw;"> 
+            <!-- Inserisci qui il codice SVG della freccia -->
+            <!-- Ad esempio: -->
+            <path fill="#ffffff" d="M12 2 L2 12 L12 22 L12 16 L22 16 L22 8 L12 8 Z"/>
+        </svg>
+    </a>
+    <h1>
+    Menù
+    </h1>
+</header>
+<body>
+    <div class="container">
+        <div class="category" onclick="toggleItemList(0)">
+            <h2 class="category-title">
+                Analcolici 
+                <span class="arrow">&#9660;</span>
+            </h2>
+            <ul class="item-list">
+                <li>Caffè <span class="price">€1</span></li>
+                <li>Acqua<span class="price">€1</span></li>
+                <li>Estathè Brick<span class="price">€1</span></li>
+            </ul>
+        </div>
+        <div class="category" onclick="toggleItemList(1)">
+            <h2 class="category-title">
+                Long Drinks
+                <span class="arrow">&#9660;</span>
+            </h2>
+            <ul class="item-list">
+                <li>Gin Tonic<span class="price">€5</span></li>
+                <li>Gin Lemon<span class="price">€5</span></li>
+                <li>Cuba Libre<span class="price">€5</span></li>
+                <li>Jack & Cola<span class="price">€6</span></li>
+                <li>Vodka Tonic<span class="price">€5</span></li>
+                <li>Vodka Lemon<span class="price">€5</span></li>
+                <li>Vodka Redbull<span class="price">€5</span></li>
+                <li>Malibù & Ananas<span class="price">€5</span></li>
+                <li>Mailbù & Cola<span class="price">€5</span></li>
+                <li></li>
+                <li>Premium: <br>
+                (Utilizzo di Gin Mare o Vodka Grey Goose)<nobr><span class="price">+ €2</span></nobr></li>
+            </ul>
+        </div>
+        <div class="category" onclick="toggleItemList(2)">
+            <h2 class="category-title">
+                Cocktails
+                <span class="arrow">&#9660;</span>
+            </h2>
+            <ul class="item-list">
+                <li>Mojito<span class="price">€6</span></li>
+                <li>Sex on The Beach<span class="price">€6</span></li>
+                <li>Long Island<span class="price">€6</span></li>
+                <li>Negroni<span class="price">€6</span></li>
+                <li>Caipiroska alla Fragola<span class="price">€6</span></li>
+                <li>Moscow Mule<span class="price">€6</span></li>
+                <li>Premium: <br>
+                (Utilizzo di Gin Mare o Vodka Grey Goose)<nobr><span class="price">+ €2</span></nobr></li>
+            </ul>
+        </div>
+        <div class="category" onclick="toggleItemList(3)">
+            <h2 class="category-title">
+                Alla Spina
+                <span class="arrow">&#9660;</span>
+            </h2>
+            <ul class="item-list">
+                <li>Birra<span class="price">€4</span></li>
+                <li>Coca Cola<span class="price">€3</span></li>
+                <li>Schweppes<span class="price">€3</span></li>
+            </ul>
+        </div>
+        <div class="category" onclick="toggleItemList(4)">
+            <h2 class="category-title">
+                Birre in Bottiglia
+                <span class="arrow">&#9660;</span>
+            </h2>
+            <ul class="item-list">
+                <li>Ceres<span class="price">€3,5</span></li>
+                <li>Ichnusa non filtrata<span class="price">€3,5</span></li>
+                <li>Tennent's Super<span class="price">€3,5</span></li>
+            </ul>
+        </div>
+        <div class="category" onclick="toggleItemList(5)">
+            <h2 class="category-title">
+                Shots
+                <span class="arrow">&#9660;</span>
+            </h2>
+            <ul class="item-list">
+                <li>Rum e Pera<span class="price">€3</span></li>
+                <li>Tequila sale e limone<span class="price">€3</span></li>
+                <li>Borghetti<span class="price">€2,5</span></li>
+                <li>Limoncello<span class="price">€2,5</span></li>
+                <li>Jagermeister<span class="price">€2,5</span></li>
+                <li>Montenegro<span class="price">€2,5</span></li>
+                <li>Baileys<span class="price">€2,5</span></li>
+                <li>Jack Daniel's<span class="price">€2,5</span></li>
+                <li>Sambuca<span class="price">€2,5</span></li>
+                <li>Melino<span class="price">€2,5</span></li>
+                <li>Amaro del Capo<span class="price">€2,5</span></li>
+            </ul>
+        </div>
+        <div class="category" onclick="toggleItemList(6)">
+            <h2 class="category-title">
+                Special
+                <span class="arrow">&#9660;</span>
+            </h2>
+            <ul class="item-list">
+                <li>1 metro di rum e pera<span class="price">€15</span></li>
+                <li>1 metro di shots a scelta<span class="price">€24</span></li>
+            </ul>
+        </div>
+        <!-- Altre categorie qui -->
+    </div>
+
+    <script>
+        function toggleItemList(index) {
+            const categories = document.querySelectorAll(".category");
+            const itemList = categories[index].querySelector(".item-list");
+
+            itemList.classList.toggle("show");
+
+            const categoryTitle = categories[index].querySelector(".category-title");
+            categoryTitle.classList.toggle("expanded");
+
+            if (itemList.classList.contains("show")) {
+                expandCategory(itemList); // Espandi la categoria
+            } else {
+                collapseCategory(itemList); // Riduci la categoria
+            }
+        }
+
+        function expandCategory(itemList) {
+            // Calcola l'altezza del contenuto dell'elenco degli elementi
+            const itemHeight = itemList.scrollHeight;
+            // Imposta la max-height per espandere la categoria
+            itemList.style.maxHeight = itemHeight + "px";
+        }
+
+        function collapseCategory(itemList) {
+            // Imposta la max-height per ridurre la categoria a 0
+            itemList.style.maxHeight = 0;
+        }
+    </script>
+</body>
+</html>
+
