@@ -21,7 +21,10 @@ jobs:
             images/22-07-23/
             images/24-07-23/
             images/25-07-23/
-          key: ${{ runner.os }}-images-${{ hashFiles('images/21-07-23/**') }}-${{ hashFiles('images/22-07-23/**') }}-${{ hashFiles('images/24-07-23/**') }}
+            images/26-07-23/
+            images/27-07-23/
+            images/28-07-23/
+          key: ${{ runner.os }}-images-${{ hashFiles('images/21-07-23/**') }}-${{ hashFiles('images/22-07-23/**') }}-${{ hashFiles('images/24-07-23/**') }}-${{ hashFiles('images/25-07-23/**') }}-${{ hashFiles('images/26-07-23/**') }}-${{ hashFiles('images/27-07-23/**') }}-${{ hashFiles('images/28-07-23/**') }}
           #-${{ hashFiles('images/25-07-23/**') }}
           # Add more hashFiles entries for additional folders
       # Add more steps here if needed for your workflow
