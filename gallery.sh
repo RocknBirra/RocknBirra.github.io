@@ -171,7 +171,7 @@ for MY_FILENAME in *.[jJ][pP][gG]; do
 	for MY_RES in "${MY_HEIGHTS[@]}"; do
 		if [[ ! -s $MY_THUMBDIR/$MY_RES/$MY_FILENAME ]]; then
 			debugOutput "$MY_THUMBDIR/$MY_RES/$MY_FILENAME"
-			$MY_CONVERT_COMMAND -auto-orient -strip -quality $MY_QUALITY -resize x$MY_RES "$MY_FILENAME" "$MY_THUMBDIR/$MY_RES/$MY_FILENAME"
+			$MY_CONVERT_COMMAND -auto-orient -strip -quality $MY_QUALITY -interlace JPEG -resize x$MY_RES "$MY_FILENAME" "$MY_THUMBDIR/$MY_RES/$MY_FILENAME"
 		fi
 	done
 	cat >> "$MY_INDEX_HTML_FILE" << EOF

@@ -16,7 +16,7 @@ Developed by Federico Calzoni.
    1. copy gallery.sh in the folder created
    2. run gallery.sh 
    ```bash
-   gallery.sh -t "My Photos" -d "thumbs"
+   sh gallery.sh -t "My Photos" -d "thumbs"
    ```
    - (replace "My Photos" with the title of the album, a.e.: 29/07/23 #Cumbesa")
    1. delete gallery.sh from the folder
@@ -39,6 +39,7 @@ Developed by Federico Calzoni.
     ```
     - Replace "images/29-07-23/index.html", with the new one.
     - Replace "images/29-07-23/thumbs/406/IMG_3293.JPG" with an image that you like from the new ones
-    - Replace $"29/07/23 <Br> #Cumbesa"$ with the new album name
+    - Replace "29/07/23 &lt;Br&gt; #Cumbesa" with the new album name
+
 5.  Push changes to github and automatically a workflow will start and deploy the updated website. 
 
