@@ -96,89 +96,112 @@ for MY_RES in "${MY_HEIGHTS[@]}"; do
 	[[ -d "$MY_THUMBDIR/$MY_RES" ]] || mkdir -p "$MY_THUMBDIR/$MY_RES" || exit 3
 done
 
-#### Create Startpage
+### Create Startpage
 debugOutput "$MY_INDEX_HTML_FILE"
 cat > "$MY_INDEX_HTML_FILE" << EOF
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>$MY_TITLE</title>
-	<meta name="viewport" content="width=device-width">
-	<meta name="robots" content="noindex, nofollow">
-	<link rel="stylesheet" href="$MY_CSS">
+    <meta charset="utf-8">
+    <title>$MY_TITLE</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="$MY_CSS">
+    <style>
+        .navbar-brand {
+            justify-content: start;
+            color: yellow;
+        }
+        .navbar-brand:hover, .navbar-brand:active {
+            color: white;
+        }
+        .navbar-brand svg {
+            fill: currentColor;
+        }
+        body {
+            background-color: #222222;
+        }
+        .btn-primary {
+            color: #fff;
+            background-color: #333333;
+            border-color: #f7f612;
+        }
+        .btn-secondary {
+            color: #fff;
+            background-color: #333333;
+            border-color: #6c757d;
+        }
+        p {
+            margin-top: 0;
+            margin-bottom: 0;
+            align-content: center;
+            display: grid;
+        }
+        .navbar .container, .navbar .container-fluid, .navbar .container-lg, .navbar .container-md, .navbar .container-sm, .navbar .container-xl {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            -ms-flex-align: center;
+            align-items: center;
+            -ms-flex-pack: justify;
+            justify-content: center;
+        }
+        .navbar-dark .navbar-brand {
+            color: #f7f612;
+        }
+        .bg-dark {
+            background-color: #333 !important;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .row {
+            margin-left: -10px; 
+            margin-right: -10px; 
+        }
+		.my-gallery-item {
+			padding: 2.5px;
+		}
+    </style>
 </head>
 <body>
 <header>
-	<div class="navbar navbar-dark bg-dark shadow-sm">
-		<div class="container">
-			<a href="#" class="navbar-brand">
-				<strong>$MY_TITLE</strong>
-			</a>
-		</div>
-	</div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a href="https://rocknbirra.github.io/photos.html" class="navbar-brand d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 24px; height: 24px; margin-right: 10px;"> 
+                    <path d="M12 2 L2 12 L12 22 L12 16 L22 16 L22 8 L12 8 Z"/>
+                </svg>
+                <strong>$MY_TITLE</strong>
+            </a>
+        </div>
+    </div>
 </header>
-<style>
-body {
-	background-color: #222222;
-}
-.btn-primary {
-  color: #fff;
-  background-color: #333333;
-  border-color: #f7f612;
-}
-.btn-secondary {
-  color: #fff;
-  background-color: #333333;
-  border-color: #6c757d;
-}
-p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  align-content: center;
-  display: grid;
-}
-.navbar .container, .navbar .container-fluid, .navbar .container-lg, .navbar .container-md, .navbar .container-sm, .navbar .container-xl {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  -ms-flex-align: center;
-  align-items: center;
-  -ms-flex-pack: justify;
-  justify-content: center;
-}
-.navbar-dark .navbar-brand {
-  color: #f7f612;
-}
-.bg-dark {
-  background-color: #333 !important;
-}
-</style>
 <main class="container">
 EOF
 
 ### Photos (JPG)
 if [[ $(find . -maxdepth 1 -type f -iname \*.jpg | wc -l) -gt 0 ]]; then
 
-MY_ROWS='3'
-echo '<div class="row row-cols-sm-1 row-cols-md-'"$((MY_ROWS-2))"' row-cols-lg-'"$((MY_ROWS-1))"' row-cols-xl-'"$MY_ROWS"' py-5">' >> "$MY_INDEX_HTML_FILE"
+echo '<div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-0 py-2">' >> "$MY_INDEX_HTML_FILE"
 ## Generate Images
 MY_NUM_FILES=0
 for MY_FILENAME in *.[jJ][pP][gG]; do
-	MY_FILELIST[$MY_NUM_FILES]=$MY_FILENAME
-	(( MY_NUM_FILES++ ))
-	for MY_RES in "${MY_HEIGHTS[@]}"; do
-		if [[ ! -s $MY_THUMBDIR/$MY_RES/$MY_FILENAME ]]; then
-			debugOutput "$MY_THUMBDIR/$MY_RES/$MY_FILENAME"
-			$MY_CONVERT_COMMAND -auto-orient -strip -quality $MY_QUALITY -interlace JPEG -resize x$MY_RES "$MY_FILENAME" "$MY_THUMBDIR/$MY_RES/$MY_FILENAME"
-		fi
-	done
-	cat >> "$MY_INDEX_HTML_FILE" << EOF
-<div class="col">
-	<p>
-		<a href="$MY_THUMBDIR/$MY_FILENAME.html"><img src="$MY_THUMBDIR/$MY_HEIGHT_SMALL/$MY_FILENAME" alt="Thumbnail: $MY_FILENAME" class="rounded mx-auto d-block" height="$((MY_HEIGHT_SMALL/2))"></a>
-	</p>
+    MY_FILELIST[$MY_NUM_FILES]=$MY_FILENAME
+    (( MY_NUM_FILES++ ))
+    for MY_RES in "${MY_HEIGHTS[@]}"; do
+        if [[ ! -s $MY_THUMBDIR/$MY_RES/$MY_FILENAME ]]; then
+            debugOutput "$MY_THUMBDIR/$MY_RES/$MY_FILENAME"
+            $MY_CONVERT_COMMAND -auto-orient -strip -quality $MY_QUALITY -interlace JPEG -resize x$MY_RES "$MY_FILENAME" "$MY_THUMBDIR/$MY_RES/$MY_FILENAME"
+        fi
+    done
+    cat >> "$MY_INDEX_HTML_FILE" << EOF
+<div class="col my-gallery-item">
+    <p>
+        <a href="$MY_THUMBDIR/$MY_FILENAME.html"><img src="$MY_THUMBDIR/$MY_HEIGHT_SMALL/$MY_FILENAME" alt="Thumbnail: $MY_FILENAME" class="img-fluid rounded mx-auto d-block"></a>
+    </p>
 </div>
 EOF
 done
@@ -199,21 +222,39 @@ while [[ $MY_FILE -lt $MY_NUM_FILES ]]; do
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>$MY_FILENAME</title>
-<meta name="viewport" content="width=device-width">
-<meta name="robots" content="noindex, nofollow">
-<link rel="stylesheet" href="$MY_CSS">
+	<meta charset="utf-8">
+	<title>$MY_FILENAME</title>
+	<meta name="viewport" content="width=device-width">
+	<meta name="robots" content="noindex, nofollow">
+	<link rel="stylesheet" href="$MY_CSS">
+	<style>
+		.navbar-brand {
+			justify-content: start;
+			color: yellow;
+		}
+		.navbar-brand:hover, .navbar-brand:active {
+			color: white;
+		}
+		.navbar-brand svg {
+			fill: currentColor;
+			width: 24px;
+			height: 24px;
+			margin-right: 10px;
+		}
+	</style>
 </head>
 <body>
 <header>
-	<div class="navbar navbar-dark bg-dark shadow-sm">
-		<div class="container">
-			<a href="../index.html" class="navbar-brand">
-				<strong>$MY_TITLE</strong>
-			</a>
-		</div>
-	</div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a href="../index.html" class="navbar-brand d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> 
+                    <path d="M12 2 L2 12 L12 22 L12 16 L22 16 L22 8 L12 8 Z"/>
+                </svg>
+                <strong>$MY_TITLE</strong>
+            </a>
+        </div>
+    </div>
 </header>
 <style>
 body {
@@ -258,9 +299,9 @@ EOF
 	# Pager
 	echo '<div class="row py-3"><div class="col text-left">' >> "$MY_IMAGE_HTML_FILE"
 	if [[ $MY_PREV ]]; then
-		echo '<a href="'"$MY_PREV"'.html" accesskey="p" title="⌨️ PC: [Alt]+[Shift]+[P] / MAC: [Control]+[Option]+[P]" class="btn btn-secondary " role="button">&laquo; Previous</a>' >> "$MY_IMAGE_HTML_FILE"
+		echo '<a href="'"$MY_PREV"'.html" accesskey="p" title="⌨️ PC: [Alt]+[Shift]+[P] / MAC: [Control]+[Option]+[P]" class="btn btn-secondary " role="button">&laquo; Precedente</a>' >> "$MY_IMAGE_HTML_FILE"
 	else
-		echo '<a href="#" class="btn btn-secondary  disabled" role="button" aria-disabled="true">&laquo; Previous</a>' >> "$MY_IMAGE_HTML_FILE"
+		echo '<a href="#" class="btn btn-secondary  disabled" role="button" aria-disabled="true">&laquo; Precedente</a>' >> "$MY_IMAGE_HTML_FILE"
 	fi
 	cat >> "$MY_IMAGE_HTML_FILE" << EOF
 </div>
@@ -268,9 +309,9 @@ EOF
 <div class="col text-right">
 EOF
 	if [[ $MY_NEXT ]]; then
-		echo '<a href="'"$MY_NEXT"'.html" accesskey="n" title="⌨️ PC: [Alt]+[Shift]+[N] / MAC: [Control]+[Option]+[N]" class="btn btn-secondary ">Next &raquo;</a>' >> "$MY_IMAGE_HTML_FILE"
+		echo '<a href="'"$MY_NEXT"'.html" accesskey="n" title="⌨️ PC: [Alt]+[Shift]+[N] / MAC: [Control]+[Option]+[N]" class="btn btn-secondary ">Successiva &raquo;</a>' >> "$MY_IMAGE_HTML_FILE"
 	else
-		echo '<a href="#" class="btn btn-secondary  disabled" role="button" aria-disabled="true">Next &raquo;</a>' >> "$MY_IMAGE_HTML_FILE"
+		echo '<a href="#" class="btn btn-secondary  disabled" role="button" aria-disabled="true">Successiva &raquo;</a>' >> "$MY_IMAGE_HTML_FILE"
 	fi
 	echo '</div></div>' >> "$MY_IMAGE_HTML_FILE"
 
@@ -282,7 +323,7 @@ EOF
 </div>
 <div class="row">
 	<div class="col">
-		<p><a class="btn btn-primary" href="../$MY_FILENAME" download="">Download Original ($MY_FILESIZE)</a></p>
+		<p><a class="btn btn-primary" href="../$MY_FILENAME" download="">Scarica foto originale ($MY_FILESIZE)</a></p>
 	</div>
 </div>
 EOF
