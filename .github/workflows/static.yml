@@ -44,7 +44,7 @@ jobs:
         
       - name: Changed Files
         id: get_changed_files
-        uses: RocknBirra/changed-files@v44.5.5
+        uses: RocknBirra/changed-files
         with:
           files: |
             '*.html'
