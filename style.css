@@ -105,7 +105,7 @@ li {
     padding: 2vw;
     padding-top: 1vw;
     padding-bottom: 1vw;
-    border-radius: 5vw; /* Imposta il border-radius a 5vw per arrotondare gli angoli */
+    border-radius: 5vw;
     margin-bottom: 5vw;
     color: white; /* Il colore del testo delle categorie è bianco di default */
     
