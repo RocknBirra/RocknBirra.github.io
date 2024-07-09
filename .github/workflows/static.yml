@@ -42,15 +42,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
         
-      - name: Get changed files
+      - name: Changed Files
         id: get_changed_files
-        uses: tj-actions/changed-files@v34
-        with:
-          files: |
-            '*.html'
-            '*.css'
-            '*.js'
-            'images/**'
+        uses: tj-actions/changed-files@v44.5.5
 
       - name: Upload changed files
         if: steps.get_changed_files.outputs.any_changed == 'true'
