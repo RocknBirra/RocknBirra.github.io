@@ -31,21 +31,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Cache specific folders in images directory
+        
+      - name: Cache specific folders
         uses: actions/cache@v4
         with:
           path: images/
           key: ${{ runner.os }}-images-${{ hashFiles('images/**') }}-${{ hashFiles('images/*') }}
+          
       # Add more steps here if needed for your workflow
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Upload artifact
+        
+      - name: Get changed files
+        id: get_changed_files
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            '*.html'
+            '*.css'
+            '*.js'
+            'images/**'
+
+      - name: Upload changed files
+        if: steps.get_changed_files.outputs.any_changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: ${{ steps.get_changed_files.outputs.all_changed_files }}
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        
-
