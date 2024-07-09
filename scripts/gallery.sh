@@ -112,6 +112,7 @@ cat > "$MY_INDEX_HTML_FILE" << EOF
     <title>$MY_TITLE</title>
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/RocknBirra/RocknBirra.github.io/main/assets/birra.png">
     <link rel="stylesheet" href="$MY_CSS">
     <style>
         .navbar-brand {
@@ -232,6 +233,7 @@ while [[ $MY_FILE -lt $MY_NUM_FILES ]]; do
 	<title>$MY_FILENAME</title>
 	<meta name="viewport" content="width=device-width">
 	<meta name="robots" content="noindex, nofollow">
+	<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/RocknBirra/RocknBirra.github.io/main/assets/birra.png">
 	<link rel="stylesheet" href="$MY_CSS">
 	<style>
 		.navbar-brand {
