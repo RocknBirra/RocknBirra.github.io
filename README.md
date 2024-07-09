@@ -16,10 +16,11 @@ Developed by Federico Calzoni.
    1. copy gallery.sh in the folder created
    2. run gallery.sh 
    ```bash
-   sh gallery.sh -t "My Photos" -d "thumbs"
+   sh gallery.sh -t "My Photos" -d "thumbs" -e "External-Repo"
    ```
-   - (replace "My Photos" with the title of the album, a.e.: 29/07/23 #Cumbesa")
-   1. delete gallery.sh from the folder
+   - replace "My Photos" with the title of the album, a.e.: 29/07/23 #Cumbesa"
+   - if you want to store data in a remote, replace "External-Repo", a.e.: "https://raw.githubusercontent.com/RocknBirra/RocknBirra-Foto2023/main/21-07-23/"
+   1. delete gallery.sh from the folder, and if you linked an external remote, you can remove also the original pictures
 3. compress the images
    ```bash 
    run compress_images.sh

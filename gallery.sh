@@ -14,9 +14,10 @@ MY_QUALITY=85
 MY_THUMBDIR="__thumbs"
 MY_INDEX_HTML_FILE="index.html"
 MY_TITLE="Gallery"
+MY_EXTERNAL_REPO="" # Set to the URL of an external repository if you want to link to the original files
 
 # Use convert from ImageMagick
-MY_CONVERT_COMMAND="convert" 
+MY_CONVERT_COMMAND="convert" # magick or magick convert does not work because the flag -auto-orient is not supported
 # Use JHead for EXIF Information
 MY_EXIF_COMMAND="jhead"
 
@@ -38,9 +39,10 @@ MY_DATETIME+=" UTC"
 
 function usage {
 	MY_RETURN_CODE="$1"
-	echo -e "Usage: $MY_SCRIPT_NAME [-t <title>] [-d <thumbdir>] [-h]:
+	echo -e "Usage: $MY_SCRIPT_NAME [-t <title>] [-d <thumbdir>] [-e <external-repo>] [-h]:
 	[-t <title>]\\t sets the title (default: $MY_TITLE)
 	[-d <thumbdir>]\\t sets the thumbdir (default: $MY_THUMBDIR)
+	[-e <external_repo>]\\t sets the external repository (default: $MY_EXTERNAL_REPO)
 	[-h]\\t\\t displays help (this message)"
 	exit "$MY_RETURN_CODE"
 }
@@ -63,7 +65,7 @@ function getFileSize(){
 	echo "$MY_FILE_SIZE"
 }
 
-while getopts ":t:d:h" opt; do
+while getopts ":t:d:e:h" opt; do
 	case $opt in
 	t)
 		MY_TITLE="$OPTARG"
@@ -71,9 +73,13 @@ while getopts ":t:d:h" opt; do
 	d)
 		MY_THUMBDIR="$OPTARG"
 		;;
+	e)
+		MY_EXTERNAL_REPO="$OPTARG"
+		;;
 	h)
 		usage 0
 		;;
+
 	*)
 		echo "Invalid option: -$OPTARG"
 		usage 1
@@ -305,7 +311,6 @@ EOF
 	fi
 	cat >> "$MY_IMAGE_HTML_FILE" << EOF
 </div>
-<div class="col d-none d-md-block text-center"><h3>$MY_FILENAME</h3></div>
 <div class="col text-right">
 EOF
 	if [[ $MY_NEXT ]]; then
@@ -323,7 +328,13 @@ EOF
 </div>
 <div class="row">
 	<div class="col">
-		<p><a class="btn btn-primary" href="../$MY_FILENAME" download="">Scarica foto originale ($MY_FILESIZE)</a></p>
+EOF
+	if [[ $MY_EXTERNAL_REPO ]]; then
+		echo '<p><a class="btn btn-primary" href="'"$MY_EXTERNAL_REPO$MY_FILENAME"'" download="">Scarica foto originale</a></p>' >> "$MY_IMAGE_HTML_FILE"
+	else
+		echo '<p><a class="btn btn-primary" href="../'"$MY_FILENAME"'">Scarica foto originale</a></p>' >> "$MY_IMAGE_HTML_FILE"
+	fi
+	cat >> "$MY_IMAGE_HTML_FILE" << EOF
 	</div>
 </div>
 EOF
