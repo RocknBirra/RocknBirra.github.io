@@ -31,33 +31,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
-      - name: Cache specific folders
-        uses: actions/cache@v4
-        with:
-          path: images/
-          key: ${{ runner.os }}-images-${{ hashFiles('images/**') }}-${{ hashFiles('images/*') }}
-          
+      # TODO: Download images from remote and place them accordingly inside images/ chacing in this case could be useful
+      #- name: Cache specific folders in images directory
+      #  uses: actions/cache@v4
+      #  with:
+      #    path: images/
+      #    key: ${{ runner.os }}-images-${{ hashFiles('images/**') }}-${{ hashFiles('images/*') }}
       # Add more steps here if needed for your workflow
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        
-      - name: Changed Files
-        id: get_changed_files
-        uses: RocknBirra/changed-files
-        with:
-          files: |
-            '*.html'
-            '*.css'
-            '*.svg'
-            'images/**'
-
-      - name: Upload changed files
-        if: steps.get_changed_files.outputs.any_changed == 'true'
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ steps.get_changed_files.outputs.all_changed_files }}
-
+          # Upload entire repository
+          path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        
+
