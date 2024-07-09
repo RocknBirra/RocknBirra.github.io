@@ -44,7 +44,13 @@ jobs:
         
       - name: Changed Files
         id: get_changed_files
-        uses: tj-actions/changed-files@v44.5.5
+        uses: RocknBirra/changed-files@v44.5.5
+        with:
+          files: |
+            '*.html'
+            '*.css'
+            '*.svg'
+            'images/**'
 
       - name: Upload changed files
         if: steps.get_changed_files.outputs.any_changed == 'true'
