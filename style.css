@@ -82,22 +82,25 @@ li {
     margin-left: 5vw;
 }
 
-.item-list {
-    max-height: 0;
-    opacity: 0; /* Usa opacity invece di display: none */
-    overflow: hidden;
-    transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-out; /* Aggiungi l'animazione di transizione con cubic-bezier */
-}
-
 .special-text {
     font-size: 0.8em;
     opacity: 0.6;
 }
 
+
+.item-list {
+    max-height: 0;
+    opacity: 0; /* Usa opacity invece di display: none */
+    overflow: hidden;
+    transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-out; /* Aggiungi l'animazione di transizione con cubic-bezier */
+    will-change: max-height, opacity; /* Ottimizza l'animazione */
+}
+
 .item-list.show {
-    display: block;
+    max-height: 500px; /* Imposta un valore sufficiente per espandere l'elemento */
     opacity: 1; /* Mostra la categoria espansa */
 }
+
 
 /* Colore dei testi delle categorie */
 .category {
