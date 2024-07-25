@@ -231,6 +231,7 @@ footer {
     background: #dab66b;  /* fallback for old browsers */
     background: linear-gradient(rgb(255,235,130,0.4), rgb(0,50,50,0.9)), var(--background-image-url);
     background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
     border-radius: 5vw;
 }
