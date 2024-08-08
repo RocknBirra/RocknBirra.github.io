@@ -30,10 +30,9 @@ def create_thumbnail(image_path, thumbdir, height, quality=85):
 
 def generate_html(imagedir, outputdir, title, repo_url):
     # Create the output directory structure
-    title_dir = os.path.join(outputdir, title)
-    os.makedirs(title_dir, exist_ok=True)
-    thumbdir_406 = os.path.join(title_dir, "406px")
-    thumbdir_768 = os.path.join(title_dir, "768px")
+    os.makedirs(outputdir, exist_ok=True)
+    thumbdir_406 = os.path.join(outputdir, "406px")
+    thumbdir_768 = os.path.join(outputdir, "768px")
     os.makedirs(thumbdir_406, exist_ok=True)
     os.makedirs(thumbdir_768, exist_ok=True)
 
@@ -75,8 +74,8 @@ def generate_html(imagedir, outputdir, title, repo_url):
                 thumb_768_path, width_768, height_768 = create_thumbnail(image_path, thumbdir_768, 768)
     
                 # Adjust paths to be relative to the HTML file's location
-                thumb_406_rel_path = os.path.relpath(thumb_406_path, title_dir)
-                thumb_768_rel_path = os.path.relpath(thumb_768_path, title_dir)
+                thumb_406_rel_path = os.path.relpath(thumb_406_path, outputdir)
+                thumb_768_rel_path = os.path.relpath(thumb_768_path, outputdir)
     
                 # Add image details to HTML content
                 html_content += f"""
@@ -106,7 +105,7 @@ def generate_html(imagedir, outputdir, title, repo_url):
 """
 
     # Save the HTML content to a file in the title directory
-    html_file_path = os.path.join(title_dir, 'gallery.html')
+    html_file_path = os.path.join(outputdir, 'gallery.html')
     with open(html_file_path, 'w') as file:
         file.write(html_content)
     logging.info(f"HTML gallery created successfully at {html_file_path}")
