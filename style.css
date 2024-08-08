@@ -31,9 +31,10 @@ header {
 }
 
 .menu-header {
-    background-color: #333333; /* Imposta lo sfondo solo per l'header di menu.html */
+    background-color: #333333;
+    max-height: 100px;
+    overflow: hidden;
 }
-
 
 img {
     max-width: 100%;
@@ -251,7 +252,7 @@ footer {
     .back-arrow {
     width: 60px; /* Imposta la larghezza della freccia come la grandezza del testo */
     height: 60px; /* Imposta l'altezza della freccia come la grandezza del testo */
-}
+    }
 
 
     h2 {
@@ -264,10 +265,10 @@ footer {
         font-size: 25px;
         margin-top: 20px;
     }
+    
     .arrow {
         font-size: 30px;
     }
-
 
     .container {
         padding: 20px;
@@ -286,41 +287,41 @@ footer {
     
     /* Aggiungi contorno alle card delle categorie */
     outline: 2px solid #f7f612;
-}
+    }
 
-.card {
-    border-radius: 30px; /* Imposta il border-radius a 5vw per arrotondare gli angoli */
-    margin-bottom: 30px;
-    color: white; /* Il colore del testo delle categorie è bianco di default */
-    
-    /* Aggiungi contorno alle card delle categorie */
-    outline: 2px solid #f7f612;
+    .card {
+        border-radius: 30px; /* Imposta il border-radius a 5vw per arrotondare gli angoli */
+        margin-bottom: 30px;
+        color: white; /* Il colore del testo delle categorie è bianco di default */
+        
+        /* Aggiungi contorno alle card delle categorie */
+        outline: 2px solid #f7f612;
+        width: 100%;
+        text-align: center;
+    }
+
+    .albums{
+        border-radius: 30px;
+        padding-top: 250px;
+    }
+
+    .container-previews {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 1vw;
+        padding-top: 0vw;
+    }
+
+    #load {
+        background-size: 10%;
+    }
+
+    footer {
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    text-align: center;
-}
-
-.albums{
-	 border-radius: 30px;
-	 padding-top: 250px;
-}
-
-.container-previews {
-    max-width: 1500px;
-    margin: 0 auto;
-    padding: 1vw;
-    padding-top: 0vw;
-}
-
-#load {
-	background-size: 10%;
-}
-
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 200px; /* replace with actual footer height */
-}
+    height: 200px; /* replace with actual footer height */
+    }
 
 }
 
