@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
             animateThumb: true,
             mobileSettings: {
                 controls: false,
-                showCloseIcon: false,
+                showCloseIcon: true,
                 download: true,
                 rotate: false
             }
