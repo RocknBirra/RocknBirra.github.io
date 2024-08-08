@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var rowHeight;
     
         if (screenWidth < 450) {
-            rowHeight = 100; // Example value for small screens
+            rowHeight = 110; // Example value for small screens
         } else if (screenWidth < 800) {
             rowHeight = 150; // Example value for medium screens
         } else {
@@ -64,4 +64,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
         console.log("lightGallery initialization complete");
     });
+
+    // Add passive event listeners for touch and wheel events
+    galleryElement.addEventListener('touchstart', function(e) {
+        // Your touchstart logic here
+    }, { passive: true });
+
+    galleryElement.addEventListener('touchmove', function(e) {
+        // Your touchmove logic here
+    }, { passive: true });
+
+    galleryElement.addEventListener('wheel', function(e) {
+        // Your wheel logic here
+    }, { passive: true });
 });
