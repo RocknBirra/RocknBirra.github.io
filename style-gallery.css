@@ -1,0 +1,110 @@
+body {
+    background-color: #222222;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4vw;
+    padding-bottom: 0;
+    padding-top: 0;
+    margin-bottom: 3vw;
+}
+
+.menu-header {
+    background-color: #333333;
+    max-height: 100px;
+    overflow: hidden;
+}
+
+
+h1 {
+    font-size: 6vw;
+    flex-grow: 1;
+    text-align: center;
+    margin: 1vw;
+    margin-right: calc(7vw + 1em);
+    /* Sottrai la larghezza della freccia (5+2vw) e un margine di 1em */
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    /* replace with actual footer height */
+}
+
+.back-arrow {
+    width: 10vw;
+    /* Imposta la larghezza della freccia come la grandezza del testo */
+    height: 10vw;
+    /* Imposta l'altezza della freccia come la grandezza del testo */
+    cursor: pointer;
+    transition: fill 0.3s ease-in-out;
+    border: #ffffff;
+    margin: 2vw;
+}
+
+/* Colore di default */
+.back-arrow path {
+    fill: #f7f612;
+}
+
+/* Al passaggio del mouse */
+.back-link:hover .back-arrow path {
+    fill: #ffffff;
+}
+
+/* .gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}  */
+
+/* .gallery-container a {
+    display: block;
+    overflow: hidden;
+    position: relative;
+} */
+
+.img-responsive {
+    border-radius: 10px;
+}
+
+.img-responsive:hover {
+    transform: scale(0.97);
+}
+
+
+/* Media Query per dispositivi con larghezza maggiore di 550px */
+@media (min-width: 551px) {
+
+    header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    .back-arrow {
+        width: 60px;
+        /* Imposta la larghezza della freccia come la grandezza del testo */
+        height: 60px;
+        /* Imposta l'altezza della freccia come la grandezza del testo */
+    }
+
+    .arrow {
+        font-size: 30px;
+    }
+
+}
