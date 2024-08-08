@@ -30,10 +30,10 @@ document.addEventListener("DOMContentLoaded", function() {
     jQuery(galleryElement).justifiedGallery({
         captions: false,
         lastRow: "nojustify",
-        rowHeight: calculateRowHeight(),
         margins: 5,
         border: 0,
-        waitThumbnailsLoad: true
+        waitThumbnailsLoad: true,
+        rowHeight: calculateRowHeight()
     }).on("jg.resize", function () {
         var newRowHeight = calculateRowHeight();
         jQuery(galleryElement).justifiedGallery('norewind').justifiedGallery({
