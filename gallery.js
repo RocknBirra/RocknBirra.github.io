@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
         rowHeight: calculateRowHeight(),
         margins: 5,
         border: 0,
-        waitThumbnailsLoad: false
+        waitThumbnailsLoad: true
     }).on("jg.resize", function () {
         var newRowHeight = calculateRowHeight();
         jQuery(galleryElement).justifiedGallery('norewind').justifiedGallery({
