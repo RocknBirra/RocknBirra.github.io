@@ -6,6 +6,40 @@ Developed by Federico Calzoni.
 
 
 # How to add a new album:
+
+### NEW METHOD:
+
+1. Run gallery.py
+   -   usage: 
+   ```bash
+   gallery.py [-h] imagedir outputdir title repo_url
+   ```
+   -   **iamgedir:** Folder with the original pictures you want to add
+   -   **outputdir:** Folder where you want to place the thumbnails and html output.
+   -   **title:** Title of the album
+   -   **repo_url:** Remote folder in which original pictures are present
+  
+   Example: (from root directory of the project)
+   ```bash
+   python3 scripts/gallery.py '../RocknBirra-Foto2024/28-07-24/' 'images/2024/28-07-24/' '28-07-24 #Playa' 'https://raw.githubusercontent.com/RocknBirra/RocknBirra-Foto2024/main/28-07-24/'
+   ```
+   Two folders with the thumbnails images and gallery.html will be created.
+   To edit formatting and webpage behavior edit `style-gallery.css` and `gallery.js` present in the root directory of the project.
+
+2. Create a new entry in the phots page:
+   1. Place a new entry in Photos.html with the following structure:
+   ```html
+   <div class="home-buttons">
+      <div class="card">
+            <a class="albums" href="images/2024/28-07-24/gallery.html" style="--background-image-url: url(images/2024/28-07-24/406px/IMG_5860.webp);">
+               <h2 class="album-title">28/07/24 <Br> #Playa </h2>
+            </a>
+      </div>
+   </div>
+    ```
+3.  Push changes to github and automatically a workflow will start to deploy the updated website. 
+
+### OLD METHOD:
 0. Requirements:
    make sure to have installed the following packages:
    - imagemagick
