@@ -14,7 +14,7 @@ Developed by Federico Calzoni.
    ```bash
    gallery.py [-h] imagedir outputdir title repo_url
    ```
-   -   **iamgedir:** Folder with the original pictures you want to add
+   -   **imagedir:** Folder with the original pictures you want to add
    -   **outputdir:** Folder where you want to place the thumbnails and html output.
    -   **title:** Title of the album
    -   **repo_url:** Remote folder in which original pictures are present
