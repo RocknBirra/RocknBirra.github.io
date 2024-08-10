@@ -10,7 +10,6 @@ Developed by Federico Calzoni.
 ### NEW METHOD:
 
 1. Run gallery.py
-   -   usage: 
    ```bash
    gallery.py [-h] imagedir outputdir title repo_url
    ```
