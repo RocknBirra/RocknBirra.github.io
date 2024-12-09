@@ -83,6 +83,25 @@ footer {
     transform: scale(0.97);
 }
 
+/* Make the image full screen and remove thumbnails when fullscreen mode is enabled */
+.lg-fullscreen-on {
+    .lg-inner {
+      top: 0 !important;
+      bottom: 0 !important;
+    }
+    .lg-content {
+      top: 0 !important;
+      bottom: 0 !important;
+    }
+    .lg-components {
+      transform: translate3d(0, 100%, 0) !important;
+    }
+    img.lg-object.lg-image {
+        width: 100%;
+        min-height: 100%;
+        object-fit: contain;
+    }
+}
 
 /* Media Query per dispositivi con larghezza maggiore di 550px */
 @media (min-width: 551px) {
