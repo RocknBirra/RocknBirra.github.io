@@ -11,10 +11,11 @@ import json
 import requests
 import base64
 from datetime import datetime
-from pathlib import Path
-from PIL import Image
+from PIL import Image, ExifTags
 import git
 from typing import List, Tuple
+import time
+import shutil
 
 class PhotoGalleryAutomator:
     def __init__(self, config_file: str = "config.json"):
@@ -36,17 +37,43 @@ class PhotoGalleryAutomator:
         if logo.mode != 'RGBA':
             logo = logo.convert('RGBA')
         return logo
+    
+    def correct_orientation(self, img):
+        """Correct image orientation based on EXIF data"""
+        exif = img._getexif()
+        if exif is not None:
+            orientation_tag = None
+            for tag, value in exif.items():
+                tag_name = ExifTags.TAGS.get(tag, tag)
+                if tag_name == 'Orientation':
+                    orientation_tag = value
+                    break
+            if orientation_tag is not None:
+                if orientation_tag == 2:
+                    img = img.transpose(Image.FLIP_LEFT_RIGHT)
+                elif orientation_tag == 3:
+                    img = img.rotate(180, expand=True)
+                elif orientation_tag == 4:
+                    img = img.transpose(Image.FLIP_TOP_BOTTOM)
+                elif orientation_tag == 5:
+                    img = img.transpose(Image.FLIP_LEFT_RIGHT).rotate(270, expand=True)
+                elif orientation_tag == 6:
+                    img = img.rotate(270, expand=True)
+                elif orientation_tag == 7:
+                    img = img.transpose(Image.FLIP_LEFT_RIGHT).rotate(90, expand=True)
+                elif orientation_tag == 8:
+                    img = img.rotate(90, expand=True)
+        return img
 
     def add_watermark(self, image_path: str, output_path: str) -> bool:
         """Add logo watermark to bottom center of image"""
         try:
             with Image.open(image_path) as img:
+                img = self.correct_orientation(img)
                 if img.mode != 'RGB':
                     img = img.convert('RGB')
-                
                 width, height = img.size
                 is_landscape = width > height
-                
                 logo = self.load_watermark_logo()
                 
                 # Calculate watermark size based on orientation
@@ -93,8 +120,8 @@ class PhotoGalleryAutomator:
         response = requests.post(url, headers=headers, json=data)
         return response.status_code in [201, 422]  # 201 = created, 422 = already exists
 
-    def get_existing_files(self, repo_name: str, date_str: str) -> List[str]:
-        """Get list of files already in the GitHub repository"""
+    def get_existing_files(self, repo_name: str, date_str: str) -> dict:
+        """Get list of files already in the GitHub repository with their SHA"""
         try:
             url = f"https://api.github.com/repos/{self.github_username}/{repo_name}/contents/{date_str}"
             headers = {
@@ -105,10 +132,53 @@ class PhotoGalleryAutomator:
             response = requests.get(url, headers=headers)
             if response.status_code == 200:
                 files = response.json()
-                return [file['name'] for file in files if file['type'] == 'file']
-            return []
+                return {file['name']: file['sha'] for file in files if file['type'] == 'file'}
+            return {}
         except:
-            return []
+            return {}
+
+    def delete_file_from_github(self, repo_name: str, date_str: str, filename: str, sha: str) -> bool:
+        """Delete a file from GitHub repository"""
+        try:
+            github_path = f"{date_str}/{filename}"
+            url = f"https://api.github.com/repos/{self.github_username}/{repo_name}/contents/{github_path}"
+            headers = {
+                'Authorization': f'token {self.github_token}',
+                'Accept': 'application/vnd.github.v3+json'
+            }
+            
+            data = {
+                'message': f'Remove {filename}',
+                'sha': sha
+            }
+            
+            response = requests.delete(url, headers=headers, json=data)
+            return response.status_code == 200
+            
+        except Exception as e:
+            print(f"Error deleting {filename}: {e}")
+            return False
+        
+    def delete_local_thumbnails(self, date_str: str, filename: str) -> bool:
+        """Delete corresponding thumbnail files from local 406px and 768px directories"""
+        try:
+            base_name = os.path.splitext(filename)[0]
+            thumbnail_name = f"{base_name}.webp"
+            
+            outputdir = f"images/{self.current_year}/{date_str}/"
+            thumb_406_path = os.path.join(outputdir, "406px", thumbnail_name)
+            thumb_768_path = os.path.join(outputdir, "768px", thumbnail_name)
+            
+            deleted_count = 0
+            for thumb_path in [thumb_406_path, thumb_768_path]:
+                if os.path.exists(thumb_path):
+                    os.remove(thumb_path)
+                    deleted_count += 1
+            
+            return deleted_count > 0
+        except Exception as e:
+            print(f"Error deleting local thumbnails for {filename}: {e}")
+            return False
 
     def batch_upload_to_github(self, files_to_upload: List[Tuple[str, str]], repo_name: str, date_str: str) -> List[str]:
         """Upload multiple files to GitHub repository"""
@@ -154,8 +224,6 @@ class PhotoGalleryAutomator:
                 origin.pull()
             else:
                 git.Repo.clone_from(repo_url, repo_dir)
-            
-            import time
             time.sleep(2)
             return repo_dir
             
@@ -165,28 +233,43 @@ class PhotoGalleryAutomator:
             return repo_dir
 
     def process_photos(self, input_dir: str, date_str: str) -> Tuple[str, List[str]]:
-        """Process photos: watermark and upload to GitHub"""
+        """Process photos: sync GitHub repo to match local directory"""
         photo_repo = self.config.get('photo_repo_template', 'RocknBirra-Foto{year}').format(year=self.current_year)
         
         self.create_github_repo(photo_repo)
         
+        # Get existing files in GitHub (with SHA for deletion)
         existing_files = self.get_existing_files(photo_repo, date_str)
-        print(f"Existing files: {len(existing_files)}")
+        print(f"Existing files in GitHub: {len(existing_files)}")
         
+        # Get local files
+        image_extensions = ('.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG')
+        local_files = set(f for f in os.listdir(input_dir) if f.lower().endswith(image_extensions))
+        print(f"Local files: {len(local_files)}")
+        
+        # Files to delete (in GitHub but not in local)
+        files_to_delete = set(existing_files.keys()) - local_files
+        
+        # Files to upload (in local but not in GitHub)
+        files_to_upload_names = local_files - set(existing_files.keys())
+        
+        print(f"Files to delete: {len(files_to_delete)}")
+        print(f"Files to upload: {len(files_to_upload_names)}")
+        
+        # Delete files that are no longer local
+        deleted_files = []
+        for filename in files_to_delete:
+            if self.delete_file_from_github(photo_repo, date_str, filename, existing_files[filename]):
+                deleted_files.append(filename)
+                self.delete_local_thumbnails(date_str, filename)
+                print(f"✗ Deleted: {filename}")
+        
+        # Process and upload new files
         temp_dir = f"temp_watermarked_{date_str}"
         os.makedirs(temp_dir, exist_ok=True)
         
-        image_extensions = ('.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG')
-        image_files = [f for f in os.listdir(input_dir) if f.lower().endswith(image_extensions)]
-        
         files_to_upload = []
-        skipped_files = []
-        
-        for filename in image_files:
-            if filename in existing_files:
-                skipped_files.append(filename)
-                continue
-            
+        for filename in files_to_upload_names:
             input_path = os.path.join(input_dir, filename)
             watermarked_path = os.path.join(temp_dir, filename)
             
@@ -198,20 +281,21 @@ class PhotoGalleryAutomator:
             print(f"Uploading {len(files_to_upload)} files...")
             uploaded_files = self.batch_upload_to_github(files_to_upload, photo_repo, date_str)
         
-        all_files = skipped_files + uploaded_files
-        print(f"Total: {len(all_files)} files ({len(skipped_files)} skipped, {len(uploaded_files)} uploaded)")
-        
-        import shutil
+        # Clean up temp directory
         shutil.rmtree(temp_dir)
         
-        return photo_repo, all_files
+        # Final file list (what should be in GitHub now)
+        final_files = list(local_files)
+        
+        print(f"Sync complete: {len(deleted_files)} deleted, {len(uploaded_files)} uploaded")
+        print(f"Total files in repo: {len(final_files)}")
+        
+        return photo_repo, final_files
 
     def run_gallery_script(self, date_str: str, title: str, photo_repo: str) -> bool:
         """Run the gallery.py script"""
         repo_dir = self.clone_or_update_photo_repo(photo_repo)
         
-        # Wait for sync
-        import time
         for attempt in range(3):
             imagedir = os.path.join(repo_dir, date_str)
             if os.path.exists(imagedir):
@@ -231,6 +315,8 @@ class PhotoGalleryAutomator:
         outputdir = f"images/{self.current_year}/{date_str}/"
         repo_url = f"https://raw.githubusercontent.com/{self.github_username}/{photo_repo}/main/{date_str}/"
         
+        print(f"Running gallery script: {gallery_script} with output to {outputdir}...")
+        
         cmd = ['python3', gallery_script, imagedir, outputdir, title, repo_url]
         result = subprocess.run(cmd, capture_output=True, text=True)
         
@@ -241,8 +327,26 @@ class PhotoGalleryAutomator:
             print(f"✗ Gallery failed: {result.stderr}")
             return False
 
+    def check_photos_html_entry_exists(self, date_str: str, title: str) -> bool:
+        """Check if Photos.html already contains an entry for this date/title"""
+        photos_html_path = self.config.get('photos_html_path', 'Photos.html')
+        
+        try:
+            with open(photos_html_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Check if an entry with this date already exists
+            entry_pattern = f"images/{self.current_year}/{date_str}/gallery.html"
+            return entry_pattern in content
+        except FileNotFoundError:
+            return False
+
     def update_photos_html(self, date_str: str, title: str, cover_image: str) -> bool:
-        """Update Photos.html with new gallery entry"""
+        """Update Photos.html with new gallery entry (only if not already present)"""
+        if self.check_photos_html_entry_exists(date_str, title):
+            print("ℹ Photos.html entry already exists - skipping update")
+            return True
+        
         photos_html_path = self.config.get('photos_html_path', 'Photos.html')
         
         with open(photos_html_path, 'r', encoding='utf-8') as f:
