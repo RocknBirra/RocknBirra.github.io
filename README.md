@@ -10,9 +10,10 @@ The gallery pages are generated using a custom automation script based on [galle
 
 ## How to Add a New Album
 
-### METHOD 2025 (Automated)
+This script handles everything for you: it adds watermarks, uploads the photos, builds the gallery, and updates the website.
 
-**Single command automation** - handles watermarking, upload, gallery generation, and Photos.html update.
+### The Command
+Run this command from inside the main `RocknBirra.github.io` folder:
 
 ```bash
 python3 automate_gallery.py /path/to/photos DD-MM-YY "Title" cover_image.jpg
@@ -29,7 +30,23 @@ python3 automate_gallery.py ~/Downloads/Safari_Photos 20-07-25 "#Safari" IMG_123
 - `title`: Album title (use quotes)
 - `cover_image`: Filename for gallery cover
 
-**Note:** Run from `RocknBirra.github.io` directory. After completion, review changes and push to deploy.
+After completion, review changes and push to deploy.
+
+---
+
+### Notes
+
+- Repository Creation
+  Do not manually create the photo repository on GitHub. The script automatically detects the current year and creates it for you (e.g., RocknBirra-Foto2026).
+
+- Resuming After a Crash or Stop
+  If your internet drops or you stop the script halfway through, just run the exact same command again. It remembers what was already uploaded and will skip them, picking up right where it left off.
+
+- Deleting a Photo
+  To remove an image from an existing gallery, simply delete the file from your local folder on your computer, then run the script command again. It will detect the missing photo and delete it from the website.
+
+- Fixing Sync Issues
+  If the website gets out of sync with your folder (for example, if someone deleted a file directly on GitHub), look for a hidden file named something like `.state_RocknBirra-Foto2026.json` in your main folder and delete it. Run the script again, and it will fix itself.
 
 ---
 
