@@ -297,7 +297,7 @@ class GitHubGateway:
                 url: str = f"https://api.github.com/repos/{self.username}/{repo_name}/contents/{github_path}"
                 data: dict = {'message': f'Add {filename}', 'content': content}
                 
-                response = self.session.put(url, json=data, timeout=30)
+                response = self.session.put(url, json=data, timeout=60)
                 
                 if response.status_code in [200, 201]:
                     print("✓ Success")

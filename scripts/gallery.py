@@ -64,7 +64,7 @@ def generate_html(imagedir, outputdir, title, repo_url):
         <div class="gallery-container" id="animated-thumbnails-gallery">
 """
 
-    for filename in os.listdir(imagedir):
+    for filename in sorted(os.listdir(imagedir)):
         if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
             image_path = os.path.join(imagedir, filename)
             logging.info(f"Processing image: {image_path}")

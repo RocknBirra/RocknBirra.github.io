@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log("Screen width: " + screenWidth);
         var rowHeight;
     
-        if (screenWidth < 450) {
+        if (screenWidth < 325) {
+            rowHeight = 80; // tiny screens: ensures 2 columns
+        } else if (screenWidth < 450) {
             rowHeight = 110; // small screens
         } else if (screenWidth < 800) {
             rowHeight = 150; // medium screens
