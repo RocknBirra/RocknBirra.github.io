@@ -33,7 +33,12 @@ class StateManager:
             root_dir: The resolved absolute path of the workspace.
             repo_name: Target GitHub repository name.
         """
-        self.state_file: Path = root_dir / f".state_{repo_name}.json"
+        # Define the dedicated state directory
+        state_dir: Path = root_dir / ".states"
+        state_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Assign the file path inside the new directory
+        self.state_file: Path = state_dir / f".state_{repo_name}.json"
         self._state: dict[str, dict[str, str]] = self._read_initial_state()
 
     def _read_initial_state(self) -> dict[str, dict[str, str]]:
@@ -108,7 +113,7 @@ class ImageProcessor:
             and rotation. The internal logic applies inverse transformations to 
             restore standard viewing orientation.
         """
-        exif = img._getexif() if hasattr(img, '_getexif') else None
+        exif = img.getexif() if hasattr(img, 'getexif') else None
         if exif is not None:
             orientation_tag = None
             for tag, value in exif.items():
@@ -118,17 +123,17 @@ class ImageProcessor:
                     break
             if orientation_tag is not None:
                 if orientation_tag == 2:
-                    img = img.transpose(Image.FLIP_LEFT_RIGHT)
+                    img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
                 elif orientation_tag == 3:
                     img = img.rotate(180, expand=True)
                 elif orientation_tag == 4:
-                    img = img.transpose(Image.FLIP_TOP_BOTTOM)
+                    img = img.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
                 elif orientation_tag == 5:
-                    img = img.transpose(Image.FLIP_LEFT_RIGHT).rotate(270, expand=True)
+                    img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT).rotate(270, expand=True)
                 elif orientation_tag == 6:
                     img = img.rotate(270, expand=True)
                 elif orientation_tag == 7:
-                    img = img.transpose(Image.FLIP_LEFT_RIGHT).rotate(90, expand=True)
+                    img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT).rotate(90, expand=True)
                 elif orientation_tag == 8:
                     img = img.rotate(90, expand=True)
         return img
@@ -276,6 +281,9 @@ class GitHubGateway:
 
         Yields:
             Filename of each successfully uploaded file.
+
+        Raises:
+            PermissionError: If the GitHub API returns a 401 or 403 status code.
         """
         total_files: int = len(files_to_upload)
         
@@ -295,15 +303,16 @@ class GitHubGateway:
                     print("✓ Success")
                     yield filename
                 elif response.status_code in [401, 403]:
-                    print(f"✗ Fatal Auth Error (HTTP {response.status_code}). Aborting pipeline.")
-                    return
+                    error_msg: str = f"Fatal Auth Error (HTTP {response.status_code}). Aborting pipeline."
+                    print(f"✗ {error_msg}")
+                    raise PermissionError(error_msg)
                 else:
                     print(f"✗ Failed (HTTP {response.status_code})")
                     
-            except OSError as e:
-                print(f"✗ File read error: {e}")
             except requests.RequestException as e:
                 print(f"✗ Network error: {e}")
+            except OSError as e:
+                print(f"✗ File read error: {e}")
 
 
 class FileSystemManager:
@@ -396,9 +405,9 @@ class FileSystemManager:
             True if gallery generation executes with a zero exit code, False otherwise.
         """
         repo_dir: Path = self.clone_or_update_repo(photo_repo)
+        imagedir: Path = repo_dir / date_str
         
         for _ in range(3):
-            imagedir: Path = repo_dir / date_str
             if imagedir.exists() and any(f.suffix.lower() in {'.jpg', '.jpeg', '.png'} for f in imagedir.iterdir()):
                 break
             time.sleep(2)
@@ -631,14 +640,16 @@ def main() -> None:
     config_path: Path = Path(args.config).resolve()
     
     automator = PhotoGalleryAutomator(config_path)
-    success: bool = automator.run_automation(input_path, args.date, args.title, args.cover_image)
     
-    sys.exit(0 if success else 1)
-
-
-if __name__ == "__main__":
     try:
-        main()
+        success: bool = automator.run_automation(input_path, args.date, args.title, args.cover_image)
+        sys.exit(0 if success else 1)
+    except PermissionError:
+        # Error is already printed by the gateway; fail fast and abort.
+        sys.exit(1)
     except KeyboardInterrupt:
         print("\n[Interrupt] Pipeline terminated by user.")
         sys.exit(1)
+
+if __name__ == "__main__":
+    main()
