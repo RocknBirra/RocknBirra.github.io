@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+window.addEventListener("load", function() {
     const galleryElement = document.getElementById('animated-thumbnails-gallery');    
     
     if (!galleryElement) {
@@ -6,46 +6,31 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
     }
 
+    const $gallery = jQuery(galleryElement);
     let lightGalleryInitialized = false;
+    let currentRowHeight = 0;
 
     function calculateRowHeight() {
-        var screenWidth = window.innerWidth;
-        console.log("Screen width: " + screenWidth);
-        var rowHeight;
-    
-        if (screenWidth < 325) {
-            rowHeight = 80; // tiny screens: ensures 2 columns
-        } else if (screenWidth < 450) {
-            rowHeight = 110; // small screens
-        } else if (screenWidth < 800) {
-            rowHeight = 150; // medium screens
-        } else {
-            rowHeight = 200; // large screens
-        }
-    
-        return rowHeight;
+        const screenWidth = window.innerWidth;
+        if (screenWidth < 450) return 90; // small screens
+        if (screenWidth < 800) return 110; // medium screens
+        return 200;                        // large screens
     }
 
-    console.log("Gallery element found");
+    // Set initial state
+    currentRowHeight = calculateRowHeight();
+    console.log("Initial row height set to:", currentRowHeight);
 
     // Initialize justifiedGallery
-    jQuery(galleryElement).justifiedGallery({
+    $gallery.justifiedGallery({
         captions: false,
         lastRow: "nojustify",
         margins: 5,
         border: 0,
         waitThumbnailsLoad: true,
-        rowHeight: calculateRowHeight()
-    }).on("jg.resize", function () {
-        var newRowHeight = calculateRowHeight();
-        jQuery(galleryElement).justifiedGallery('norewind').justifiedGallery({
-            rowHeight: newRowHeight
-        });
+        rowHeight: currentRowHeight
     }).on("jg.complete", function () {
-        console.log("justifiedGallery initialization complete");
-
         if (!lightGalleryInitialized) {
-            // Initialize lightGallery after justifiedGallery is complete
             lightGallery(galleryElement, {
                 plugins: [lgZoom, lgThumbnail, lgFullscreen],
                 speed: 500,
@@ -62,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     fullScreen: true
                 }
             });
-            console.log("lightGallery initialization complete");
             lightGalleryInitialized = true;
         }
     });
